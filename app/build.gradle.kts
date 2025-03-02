@@ -555,9 +555,10 @@ fun findCommonDir(commonMainList: List<Pair<String, String>>, otherList: List<Pa
     commonMainList.forEach { (commonDir, commonClass) ->
         otherList.forEach { (otherDir, otherClass) ->
             if (commonClass == otherClass) {
-                val className = commonClass.substringBefore("\\__init__.pyi").substringAfterLast("\\")
-                val commonDirN = commonDir + commonClass.substringBeforeLast("\\__init__.pyi")
-                val otherDirN = otherDir + otherClass.substringBeforeLast("\\__init__.pyi")
+                val className = commonClass.substringBefore("${File.separator}__init__.pyi")
+                    .substringAfterLast(File.separator)
+                val commonDirN = commonDir + commonClass.substringBeforeLast("${File.separator}__init__.pyi")
+                val otherDirN = otherDir + otherClass.substringBeforeLast("${File.separator}__init__.pyi")
                 common.add(Triple(commonDirN, otherDirN, className))
             }
         }
@@ -570,7 +571,8 @@ fun reCreateFile(common: List<Triple<String, String, String>>) {
         val commonFile = File(commonDir, "__init__.pyi")
         val otherFile = File(otherDir, "__init__.pyi")
 
-        val otherTargetName = otherDir.substringBefore("Main\\generated\\meta").substringAfterLast("\\")
+        val otherTargetName = otherDir.substringBefore("Main${File.separator}generated${File.separator}meta")
+            .substringAfterLast(File.separator)
 
         commonFile.renameTo(File(commonDir, "_$commonClass.pyi"))
         otherFile.renameTo(File(otherDir, "_${commonClass}_$otherTargetName.pyi"))
